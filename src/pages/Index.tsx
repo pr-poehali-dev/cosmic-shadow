@@ -275,6 +275,33 @@ export default function Index() {
                 <p className="text-sm font-light" style={{ color: "var(--wedding-brown)" }}>г. Тамбов, ул. Чкалова, 10А</p>
               </div>
             </div>
+
+            {/* Карта */}
+            <div className="mt-8 rounded-xl overflow-hidden" style={{ boxShadow: "0 4px 24px rgba(184,164,201,0.25)" }}>
+              <iframe
+                title="Банкетный зал Камелия"
+                src="https://yandex.ru/map-widget/v1/?ll=41.456260%2C52.721219&z=16&pt=41.456260%2C52.721219%2Cpm2rdm~41.456260%2C52.721219%2Cpm2rdl&text=%D0%A2%D0%B0%D0%BC%D0%B1%D0%BE%D0%B2%2C%20%D1%83%D0%BB.%20%D0%A7%D0%BA%D0%B0%D0%BB%D0%BE%D0%B2%D0%B0%2C%2010%D0%90"
+                width="100%"
+                height="300"
+                style={{ border: "none", display: "block" }}
+                allowFullScreen
+              />
+            </div>
+
+            <a
+              href="https://yandex.ru/maps/?text=%D0%A2%D0%B0%D0%BC%D0%B1%D0%BE%D0%B2%2C+%D1%83%D0%BB.+%D0%A7%D0%BA%D0%B0%D0%BB%D0%BE%D0%B2%D0%B0%2C+10%D0%90&z=16"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block mt-5 px-6 py-2.5 text-sm font-light transition-all duration-300 hover:scale-105"
+              style={{
+                border: "1.5px solid var(--wedding-purple)",
+                color: "var(--wedding-purple-dark)",
+                borderRadius: "2rem",
+                letterSpacing: "0.05em",
+              }}
+            >
+              Построить маршрут →
+            </a>
           </div>
         </section>
       </Section>
