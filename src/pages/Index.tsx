@@ -377,7 +377,7 @@ export default function Index() {
                 { name: "Бежевый", color: "#e8d5bc" },
                 { name: "Кремовый", color: "#fdf6ee" },
                 { name: "Коричневый", color: "#8b6f47" },
-                { name: "Пудровый", color: "#e8dff0" },
+                { name: "Пудровый", color: "#FFB2D0" },
               ].map((c) => (
                 <div key={c.name} className="flex flex-col items-center gap-2">
                   <div
