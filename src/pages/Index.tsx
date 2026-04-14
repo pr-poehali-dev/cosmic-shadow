@@ -62,6 +62,24 @@ export default function Index() {
   return (
     <main className="min-h-screen" style={{ background: "var(--wedding-cream)" }}>
 
+      {/* ── ШАПКА ── */}
+      <header
+        className="fixed top-0 left-0 w-full z-50 flex items-center justify-center py-3 px-6"
+        style={{
+          background: "rgba(253,246,238,0.85)",
+          backdropFilter: "blur(12px)",
+          borderBottom: "1px solid var(--wedding-warm)",
+        }}
+      >
+        <a
+          href="#"
+          className="font-display italic text-base md:text-lg tracking-wide"
+          style={{ color: "var(--wedding-purple-dark)" }}
+        >
+          ✿ Свадьба Краснослободцевых ✿
+        </a>
+      </header>
+
       {/* Декоративные лепестки фоновые */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <div className="absolute top-10 left-8 text-5xl opacity-10 animate-float delay-100" style={{ color: "var(--wedding-purple)" }}>❀</div>
