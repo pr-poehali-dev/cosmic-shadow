@@ -1,224 +1,396 @@
-export default function Index() {
+import { useState, useEffect, useRef } from "react";
+
+function useInView(threshold = 0.15) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setInView(true); },
+      { threshold }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [threshold]);
+  return { ref, inView };
+}
+
+function FloralDivider() {
   return (
-    <main className="min-h-screen bg-white">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 w-full z-50 bg-white border-b border-black">
-        <div className="container mx-auto px-4 md:px-8 py-4 flex justify-between items-center">
-          <a href="/" className="text-xl font-bold tracking-tighter">
-            GRIDFORM
-          </a>
-          <div className="flex space-x-8">
-            <a href="#work" className="text-sm uppercase tracking-widest hover:text-red-600 transition-colors">
-              Работы
-            </a>
-            <a href="#about" className="text-sm uppercase tracking-widest hover:text-red-600 transition-colors">
-              О нас
-            </a>
-            <a href="#contact" className="text-sm uppercase tracking-widest hover:text-red-600 transition-colors">
-              Контакты
-            </a>
+    <div className="floral-divider my-8">
+      <span className="text-[var(--wedding-purple)] text-xl animate-float">✿</span>
+    </div>
+  );
+}
+
+function Section({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  const { ref, inView } = useInView();
+  return (
+    <div
+      ref={ref}
+      className={`transition-all duration-1000 ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}
+    >
+      {children}
+    </div>
+  );
+}
+
+export default function Index() {
+  const [inviteOpen, setInviteOpen] = useState(false);
+
+  return (
+    <main className="min-h-screen" style={{ background: "var(--wedding-cream)" }}>
+
+      {/* Декоративные лепестки фоновые */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-10 left-8 text-5xl opacity-10 animate-float delay-100" style={{ color: "var(--wedding-purple)" }}>❀</div>
+        <div className="absolute top-1/4 right-6 text-4xl opacity-10 animate-float delay-300" style={{ color: "var(--wedding-purple)" }}>✿</div>
+        <div className="absolute top-1/2 left-4 text-3xl opacity-10 animate-float delay-500" style={{ color: "var(--wedding-brown)" }}>❁</div>
+        <div className="absolute bottom-1/3 right-10 text-4xl opacity-10 animate-float delay-200" style={{ color: "var(--wedding-purple)" }}>❀</div>
+        <div className="absolute bottom-20 left-12 text-3xl opacity-10 animate-float delay-600" style={{ color: "var(--wedding-brown)" }}>✿</div>
+      </div>
+
+      {/* ── HERO ── */}
+      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 text-center z-10">
+        {/* Фото пары */}
+        <div className="animate-scale-in mb-10 relative">
+          <div
+            className="w-52 h-52 md:w-64 md:h-64 rounded-full mx-auto overflow-hidden"
+            style={{ border: "4px solid var(--wedding-purple-light)", boxShadow: "0 8px 40px rgba(184,164,201,0.35)" }}
+          >
+            <img
+              src="https://cdn.poehali.dev/files/2437e660-a2ba-4dab-9b1a-2303747b97d3.jpg"
+              alt="Алина и Павел"
+              className="w-full h-full object-cover object-top"
+            />
+          </div>
+          <div
+            className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-display italic"
+            style={{ background: "var(--wedding-purple-light)", color: "var(--wedding-purple-dark)" }}
+          >
+            19 сентября 2026
           </div>
         </div>
-      </nav>
 
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 md:px-8 container mx-auto">
-        <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-12 md:col-span-7 mb-8 md:mb-0">
-            <h1 className="text-8xl md:text-9xl font-bold tracking-tighter leading-none mb-6">
-              GRID
-              <br />
-              FORM
-            </h1>
-            <p className="text-xl max-w-xl">
-              Ясность. Точность. Структура. Мы превращаем сложные идеи в чистый, функциональный дизайн, который говорит сам за себя.
+        <div className="animate-fade-in-up delay-200">
+          <p
+            className="font-display italic text-base md:text-lg tracking-widest mb-3"
+            style={{ color: "var(--wedding-purple-dark)" }}
+          >
+            свадьба
+          </p>
+          <h1
+            className="font-display text-6xl md:text-8xl lg:text-9xl leading-none mb-6"
+            style={{ color: "var(--wedding-dark)", fontWeight: 300 }}
+          >
+            Алина
+            <span style={{ color: "var(--wedding-purple)" }}> & </span>
+            Павел
+          </h1>
+        </div>
+
+        <div className="animate-fade-in-up delay-400 max-w-lg">
+          <p className="text-sm md:text-base leading-relaxed font-light mb-10" style={{ color: "var(--wedding-brown)" }}>
+            Мы будем счастливы разделить с вами один из самых важных дней нашей жизни
+          </p>
+
+          <button
+            onClick={() => setInviteOpen(true)}
+            className="px-10 py-4 font-display italic text-lg transition-all duration-300 hover:scale-105"
+            style={{
+              background: "transparent",
+              border: "1.5px solid var(--wedding-purple)",
+              color: "var(--wedding-purple-dark)",
+              borderRadius: "2rem",
+              letterSpacing: "0.05em",
+            }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLButtonElement).style.background = "var(--wedding-purple)";
+              (e.currentTarget as HTMLButtonElement).style.color = "#fff";
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+              (e.currentTarget as HTMLButtonElement).style.color = "var(--wedding-purple-dark)";
+            }}
+          >
+            Открыть приглашение ✿
+          </button>
+        </div>
+
+        {/* Стрелка вниз */}
+        <div className="absolute bottom-10 animate-float delay-700" style={{ color: "var(--wedding-purple)" }}>
+          <svg width="24" height="36" viewBox="0 0 24 36" fill="none">
+            <path d="M12 0v28M2 20l10 12 10-12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+      </section>
+
+      {/* ── МОДАЛКА: приглашение ── */}
+      {inviteOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: "rgba(61,43,26,0.5)", backdropFilter: "blur(6px)" }}
+          onClick={() => setInviteOpen(false)}
+        >
+          <div
+            className="relative max-w-md w-full rounded-2xl p-8 text-center animate-scale-in max-h-[90vh] overflow-y-auto"
+            style={{ background: "var(--wedding-cream)", boxShadow: "0 24px 80px rgba(122,92,148,0.25)" }}
+            onClick={e => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setInviteOpen(false)}
+              className="absolute top-4 right-4 text-2xl leading-none opacity-40 hover:opacity-80"
+              style={{ color: "var(--wedding-dark)" }}
+            >
+              ×
+            </button>
+            <div className="text-3xl mb-4">✿</div>
+            <p className="font-display italic text-sm mb-2" style={{ color: "var(--wedding-purple-dark)" }}>приглашение</p>
+            <h2 className="font-display text-3xl mb-6" style={{ color: "var(--wedding-dark)", fontWeight: 300 }}>
+              Дорогие родные и друзья!
+            </h2>
+            <p className="text-sm leading-relaxed font-light mb-4" style={{ color: "var(--wedding-brown)" }}>
+              Мы рады пригласить вас на нашу свадьбу и будем счастливы провести этот день вместе с вами.
+            </p>
+            <p className="text-sm leading-relaxed font-light" style={{ color: "var(--wedding-brown)" }}>
+              Этот день станет началом нашей семейной истории, и нам очень важно, чтобы рядом были самые близкие люди.
+            </p>
+            <div className="floral-divider my-6">
+              <span style={{ color: "var(--wedding-purple)" }}>❁</span>
+            </div>
+            <p className="font-display italic text-lg" style={{ color: "var(--wedding-purple-dark)" }}>
+              Алина & Павел
             </p>
           </div>
-          <div className="col-span-12 md:col-span-5 flex items-center justify-center">
-            <div className="relative w-full aspect-square bg-red-600">
-              <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-black"></div>
-            </div>
+        </div>
+      )}
+
+      {/* ── ФОТО ПАРЫ (большое) ── */}
+      <Section>
+        <div className="px-4 md:px-8 py-16 max-w-3xl mx-auto relative z-10">
+          <div
+            className="rounded-2xl overflow-hidden"
+            style={{ boxShadow: "0 16px 60px rgba(184,164,201,0.3)" }}
+          >
+            <img
+              src="https://cdn.poehali.dev/files/5ee4ed04-1ac4-4284-837c-6cf53bc8f868.jpg"
+              alt="Алина и Павел"
+              className="w-full object-cover max-h-[600px]"
+              style={{ objectPosition: "center top" }}
+            />
           </div>
         </div>
-      </section>
+      </Section>
 
-      {/* Work Section */}
-      <section id="work" className="py-20 px-4 md:px-8 bg-black text-white">
-        <div className="container mx-auto">
-          <h2 className="text-6xl font-bold tracking-tighter mb-12">РАБОТЫ</h2>
+      {/* ── ДАТА И МЕСТО ── */}
+      <Section>
+        <section className="py-20 px-6 relative z-10">
+          <div
+            className="max-w-2xl mx-auto rounded-2xl p-10 text-center"
+            style={{ background: "var(--wedding-purple-light)", boxShadow: "0 8px 40px rgba(184,164,201,0.2)" }}
+          >
+            <p className="font-display italic text-sm mb-2" style={{ color: "var(--wedding-purple-dark)" }}>место и время</p>
+            <h2
+              className="font-display text-4xl md:text-5xl mb-8"
+              style={{ color: "var(--wedding-dark)", fontWeight: 300 }}
+            >
+              Дата и место
+            </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Project 1 */}
-            <div className="group">
-              <div className="aspect-square bg-white mb-4 overflow-hidden">
-                <div className="w-full h-full flex items-center justify-center bg-neutral-100 group-hover:bg-red-600 transition-colors duration-300">
-                  <span className="text-black text-8xl font-bold">01</span>
-                </div>
+            <FloralDivider />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left mt-6">
+              <div className="text-center">
+                <div className="text-3xl mb-3">📅</div>
+                <p className="text-xs uppercase tracking-widest mb-2 font-medium" style={{ color: "var(--wedding-purple-dark)" }}>Дата</p>
+                <p className="font-display text-3xl" style={{ color: "var(--wedding-dark)", fontWeight: 400 }}>19.09.2026</p>
               </div>
-              <h3 className="text-xl font-bold mb-2">TechFlow Solutions</h3>
-              <p className="text-neutral-400">Полный брендинг и типографическая система для финтех-стартапа</p>
-            </div>
-
-            {/* Project 2 */}
-            <div className="group">
-              <div className="aspect-square bg-white mb-4 overflow-hidden">
-                <div className="w-full h-full flex items-center justify-center bg-neutral-100 group-hover:bg-red-600 transition-colors duration-300">
-                  <span className="text-black text-8xl font-bold">02</span>
-                </div>
-              </div>
-              <h3 className="text-xl font-bold mb-2">Alpine Ventures</h3>
-              <p className="text-neutral-400">Минималистичная визуальная коммуникация для инвестиционного фонда</p>
-            </div>
-
-            {/* Project 3 */}
-            <div className="group">
-              <div className="aspect-square bg-white mb-4 overflow-hidden">
-                <div className="w-full h-full flex items-center justify-center bg-neutral-100 group-hover:bg-red-600 transition-colors duration-300">
-                  <span className="text-black text-8xl font-bold">03</span>
-                </div>
-              </div>
-              <h3 className="text-xl font-bold mb-2">Nova Industries</h3>
-              <p className="text-neutral-400">Модульная дизайн-система для производственной компании</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* About Section */}
-      <section id="about" className="py-20 px-4 md:px-8">
-        <div className="container mx-auto">
-          <div className="grid grid-cols-12 gap-8">
-            <div className="col-span-12 md:col-span-5">
-              <h2 className="text-6xl font-bold tracking-tighter mb-8">О НАС</h2>
-              <div className="aspect-[4/5] bg-neutral-100 relative mb-8 md:mb-0">
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 border-2 border-black"></div>
-              </div>
-            </div>
-            <div className="col-span-12 md:col-span-7 md:pt-24">
-              <p className="text-xl mb-6">
-                GRIDFORM - дизайн-студия, преданная принципам ясности, точности и осмысленной коммуникации. Мы верим, что великий дизайн незаметен - он просто работает.
-              </p>
-              <p className="mb-6">
-                Наш подход основан на системном мышлении и типографическом мастерстве. Мы используем модульные сетки, чистую гротескную типографику, асимметричные композиции и предметную фотографию для создания дизайна, который говорит ясно и убедительно.
-              </p>
-              <p className="mb-6">
-                Основанная дизайнерами, убежденными, что форма следует за функцией, мы сотрудничаем с прогрессивными брендами, создавая визуальные языки, которые проверены временем.
-              </p>
-              <div className="grid grid-cols-2 gap-4 mt-12">
-                <div>
-                  <h3 className="text-sm uppercase tracking-widest mb-2">Принципы</h3>
-                  <ul className="space-y-2">
-                    <li>Минимализм</li>
-                    <li>Модульные сетки</li>
-                    <li>Гротескная типографика</li>
-                    <li>Предметная фотография</li>
-                  </ul>
-                </div>
-                <div>
-                  <h3 className="text-sm uppercase tracking-widest mb-2">Услуги</h3>
-                  <ul className="space-y-2">
-                    <li>Брендинг</li>
-                    <li>Визуальные системы</li>
-                    <li>Типографика</li>
-                    <li>Цифровой дизайн</li>
-                  </ul>
-                </div>
+              <div className="text-center">
+                <div className="text-3xl mb-3">📍</div>
+                <p className="text-xs uppercase tracking-widest mb-2 font-medium" style={{ color: "var(--wedding-purple-dark)" }}>Место</p>
+                <p className="font-display text-xl font-semibold mb-1" style={{ color: "var(--wedding-dark)" }}>Банкетный зал «Камелия»</p>
+                <p className="text-sm font-light" style={{ color: "var(--wedding-brown)" }}>г. Тамбов, ул. Чкалова, 10А</p>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </Section>
 
-      {/* Contact Section */}
-      <section id="contact" className="py-20 px-4 md:px-8 bg-red-600 text-white">
-        <div className="container mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div>
-              <h2 className="text-6xl font-bold tracking-tighter mb-8">КОНТАКТЫ</h2>
-              <p className="text-xl mb-8">Заинтересованы в сотрудничестве? Давайте обсудим ваш проект.</p>
-              <div className="space-y-4">
-                <p className="flex items-center">
-                  <span className="w-24 text-sm uppercase tracking-widest">Почта</span>
-                  <a href="mailto:hello@gridform.ru" className="hover:underline">
-                    hello@gridform.ru
-                  </a>
-                </p>
-                <p className="flex items-center">
-                  <span className="w-24 text-sm uppercase tracking-widest">Телефон</span>
-                  <a href="tel:+74951234567" className="hover:underline">
-                    +7 (495) 123-45-67
-                  </a>
-                </p>
-                <p className="flex items-center">
-                  <span className="w-24 text-sm uppercase tracking-widest">Адрес</span>
-                  <span>Москва, Россия</span>
-                </p>
-              </div>
+      {/* ── ПРОГРАММА ── */}
+      <Section>
+        <section className="py-20 px-6 relative z-10">
+          <div className="max-w-xl mx-auto text-center">
+            <p className="font-display italic text-sm mb-2" style={{ color: "var(--wedding-purple-dark)" }}>расписание</p>
+            <h2
+              className="font-display text-4xl md:text-5xl mb-12"
+              style={{ color: "var(--wedding-dark)", fontWeight: 300 }}
+            >
+              Программа дня
+            </h2>
+
+            <div className="space-y-0">
+              {[
+                { time: "14:00", event: "Сбор гостей" },
+                { time: "15:00", event: "Выездная регистрация" },
+                { time: "16:00", event: "Начало банкета" },
+                { time: "22:00", event: "Завершение вечера" },
+              ].map((item, i) => (
+                <div key={i} className="relative">
+                  <div
+                    className="flex items-center gap-6 py-5 px-6 rounded-xl transition-all duration-300 hover:scale-[1.02]"
+                    style={{ background: i % 2 === 0 ? "var(--wedding-beige)" : "transparent" }}
+                  >
+                    <span
+                      className="font-display text-2xl md:text-3xl min-w-[80px] text-right"
+                      style={{ color: "var(--wedding-purple)", fontWeight: 300 }}
+                    >
+                      {item.time}
+                    </span>
+                    <div
+                      className="w-px h-8 flex-shrink-0"
+                      style={{ background: "var(--wedding-purple-light)" }}
+                    />
+                    <span
+                      className="text-sm md:text-base text-left font-light"
+                      style={{ color: "var(--wedding-dark)" }}
+                    >
+                      {item.event}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
-            <div>
-              <form className="space-y-6">
-                <div>
-                  <label htmlFor="name" className="block text-sm uppercase tracking-widest mb-2">
-                    Имя
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    className="w-full bg-transparent border-b-2 border-white py-2 px-0 focus:outline-none focus:border-black placeholder-white/50"
-                    placeholder="Ваше имя"
+          </div>
+        </section>
+      </Section>
+
+      {/* ── ДРЕСС-КОД ── */}
+      <Section>
+        <section className="py-20 px-6 relative z-10">
+          <div
+            className="max-w-2xl mx-auto rounded-2xl p-10 text-center"
+            style={{ background: "var(--wedding-beige)" }}
+          >
+            <p className="font-display italic text-sm mb-2" style={{ color: "var(--wedding-purple-dark)" }}>дресс-код</p>
+            <h2
+              className="font-display text-4xl md:text-5xl mb-6"
+              style={{ color: "var(--wedding-dark)", fontWeight: 300 }}
+            >
+              Дресс-код
+            </h2>
+            <p className="text-sm font-light mb-10 max-w-md mx-auto" style={{ color: "var(--wedding-brown)" }}>
+              Мы будем благодарны, если вы поддержите атмосферу праздника и выберете наряды в нежных оттенках:
+            </p>
+
+            <div className="flex flex-wrap justify-center gap-4">
+              {[
+                { name: "Бежевый", color: "#e8d5bc" },
+                { name: "Кремовый", color: "#fdf6ee" },
+                { name: "Коричневый", color: "#8b6f47" },
+                { name: "Пудровый", color: "#e8dff0" },
+              ].map((c) => (
+                <div key={c.name} className="flex flex-col items-center gap-2">
+                  <div
+                    className="w-14 h-14 rounded-full"
+                    style={{
+                      background: c.color,
+                      border: "2px solid var(--wedding-warm)",
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.08)"
+                    }}
                   />
+                  <span className="text-xs font-light" style={{ color: "var(--wedding-brown)" }}>{c.name}</span>
                 </div>
-                <div>
-                  <label htmlFor="email" className="block text-sm uppercase tracking-widest mb-2">
-                    Почта
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    className="w-full bg-transparent border-b-2 border-white py-2 px-0 focus:outline-none focus:border-black placeholder-white/50"
-                    placeholder="Ваш email"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="message" className="block text-sm uppercase tracking-widest mb-2">
-                    Сообщение
-                  </label>
-                  <textarea
-                    id="message"
-                    rows={4}
-                    className="w-full bg-transparent border-b-2 border-white py-2 px-0 focus:outline-none focus:border-black placeholder-white/50"
-                    placeholder="Ваше сообщение"
-                  ></textarea>
-                </div>
-                <button
-                  type="submit"
-                  className="mt-8 px-8 py-3 bg-black text-white text-sm uppercase tracking-widest hover:bg-white hover:text-black transition-colors"
+              ))}
+            </div>
+          </div>
+        </section>
+      </Section>
+
+      {/* ── ВАЖНАЯ ИНФОРМАЦИЯ ── */}
+      <Section>
+        <section className="py-20 px-6 relative z-10">
+          <div className="max-w-xl mx-auto">
+            <p className="font-display italic text-sm mb-2 text-center" style={{ color: "var(--wedding-purple-dark)" }}>важно знать</p>
+            <h2
+              className="font-display text-4xl md:text-5xl mb-12 text-center"
+              style={{ color: "var(--wedding-dark)", fontWeight: 300 }}
+            >
+              Важная информация
+            </h2>
+
+            <div className="space-y-6">
+              {[
+                {
+                  icon: "🌸",
+                  text: "Мы очень любим детей, но в этот день просим вас прийти без малышей, чтобы все могли полностью насладиться праздником.",
+                },
+                {
+                  icon: "🎁",
+                  text: "Пожеланий по подаркам нет — для нас главное ваше присутствие и хорошее настроение.",
+                },
+                {
+                  icon: "💌",
+                  text: "Если вы планируете прийти со своей второй половинкой, пожалуйста, заранее сообщите нам об этом.",
+                },
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  className="flex gap-4 p-6 rounded-xl"
+                  style={{ background: "var(--wedding-purple-light)" }}
                 >
-                  Отправить
-                </button>
-              </form>
+                  <span className="text-2xl flex-shrink-0">{item.icon}</span>
+                  <p className="text-sm leading-relaxed font-light" style={{ color: "var(--wedding-dark)" }}>
+                    {item.text}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </Section>
 
-      {/* Footer */}
-      <footer className="py-8 px-4 md:px-8 bg-black text-white">
-        <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm mb-4 md:mb-0">2025 GRIDFORM Studio. Все права защищены.</p>
-          <div className="flex space-x-8">
-            <a href="#" className="text-sm uppercase tracking-widest hover:text-red-600 transition-colors">
-              Instagram
-            </a>
-            <a href="#" className="text-sm uppercase tracking-widest hover:text-red-600 transition-colors">
-              Behance
-            </a>
-            <a href="#" className="text-sm uppercase tracking-widest hover:text-red-600 transition-colors">
-              Telegram
-            </a>
+      {/* ── ФИНАЛЬНЫЙ БЛОК ── */}
+      <Section>
+        <section className="py-24 px-6 text-center relative z-10">
+          <div className="max-w-xl mx-auto">
+            <div className="text-4xl mb-8 animate-float">❀</div>
+
+            <div
+              className="rounded-2xl p-10 md:p-16"
+              style={{
+                background: "linear-gradient(135deg, var(--wedding-purple-light) 0%, var(--wedding-beige) 100%)",
+                boxShadow: "0 16px 60px rgba(184,164,201,0.3)"
+              }}
+            >
+              <p
+                className="font-display text-2xl md:text-3xl mb-4 leading-relaxed"
+                style={{ color: "var(--wedding-dark)", fontWeight: 300, fontStyle: "italic" }}
+              >
+                Будем с нетерпением ждать встречи с вами
+                <br />в наш особенный день ❤️
+              </p>
+
+              <FloralDivider />
+
+              <p
+                className="font-display text-3xl md:text-4xl"
+                style={{ color: "var(--wedding-purple-dark)", fontWeight: 400, fontStyle: "italic" }}
+              >
+                Алина и Павел
+              </p>
+
+              <p
+                className="mt-4 text-sm font-light tracking-widest"
+                style={{ color: "var(--wedding-brown)" }}
+              >
+                19 · 09 · 2026
+              </p>
+            </div>
           </div>
-        </div>
-      </footer>
+        </section>
+      </Section>
+
     </main>
-  )
+  );
 }
