@@ -1,5 +1,24 @@
 import { useState, useEffect, useRef } from "react";
 
+function useCountdown(targetDate: string) {
+  const calculate = () => {
+    const diff = new Date(targetDate).getTime() - Date.now();
+    if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+    return {
+      days: Math.floor(diff / 86400000),
+      hours: Math.floor((diff % 86400000) / 3600000),
+      minutes: Math.floor((diff % 3600000) / 60000),
+      seconds: Math.floor((diff % 60000) / 1000),
+    };
+  };
+  const [time, setTime] = useState(calculate);
+  useEffect(() => {
+    const id = setInterval(() => setTime(calculate()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  return time;
+}
+
 function useInView(threshold = 0.15) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
@@ -38,6 +57,7 @@ function Section({ children, className = "" }: { children: React.ReactNode; clas
 
 export default function Index() {
   const [inviteOpen, setInviteOpen] = useState(false);
+  const countdown = useCountdown("2026-09-19T14:00:00");
 
   return (
     <main className="min-h-screen" style={{ background: "var(--wedding-cream)" }}>
@@ -181,6 +201,48 @@ export default function Index() {
             />
           </div>
         </div>
+      </Section>
+
+      {/* ── ОБРАТНЫЙ ОТСЧЁТ ── */}
+      <Section>
+        <section className="py-16 px-6 relative z-10">
+          <div className="max-w-2xl mx-auto text-center">
+            <p className="font-display italic text-sm mb-2" style={{ color: "var(--wedding-purple-dark)" }}>
+              до нашей свадьбы осталось
+            </p>
+            <div className="flex justify-center gap-4 md:gap-8 mt-6">
+              {[
+                { value: countdown.days, label: "дней" },
+                { value: countdown.hours, label: "часов" },
+                { value: countdown.minutes, label: "минут" },
+                { value: countdown.seconds, label: "секунд" },
+              ].map((item, i) => (
+                <div key={i} className="flex flex-col items-center">
+                  <div
+                    className="w-16 h-16 md:w-24 md:h-24 rounded-2xl flex items-center justify-center mb-2"
+                    style={{
+                      background: "var(--wedding-purple-light)",
+                      boxShadow: "0 4px 20px rgba(184,164,201,0.3)",
+                    }}
+                  >
+                    <span
+                      className="font-display text-2xl md:text-4xl tabular-nums"
+                      style={{ color: "var(--wedding-purple-dark)", fontWeight: 400 }}
+                    >
+                      {String(item.value).padStart(2, "0")}
+                    </span>
+                  </div>
+                  <span
+                    className="text-xs uppercase tracking-widest font-light"
+                    style={{ color: "var(--wedding-brown)" }}
+                  >
+                    {item.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
       </Section>
 
       {/* ── ДАТА И МЕСТО ── */}
